@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import * as Tone from "tone";
 import { AppContext } from "../AppContext/AppContext";
+import { FeedbackDelay } from "tone";
 
 export const scale = [
   "C2",
@@ -63,12 +64,21 @@ const Synthesizer = () => {
 
   useEffect(() => {
     // Initialize the synthesizer
-    const drumSynth = new Tone.Synth().toDestination();
+    const drumSynth = new Tone.Synth();
+
+    const feedbackDelay = new FeedbackDelay({
+      delayTime: 0.05,
+      feedback: 0.03,
+      wet: 0.95,
+    });
+    drumSynth.connect(feedbackDelay);
+    feedbackDelay.toDestination();
+
     drumSynthRef.current = drumSynth;
 
     // Initialize FFT analyzer
     const fft = new Tone.Analyser("fft", 64);
-    drumSynth.connect(fft);
+    feedbackDelay.connect(fft);
     fftRef.current = fft;
 
     // Set an interval to play a note and update FFT data every 500 ms
@@ -76,7 +86,7 @@ const Synthesizer = () => {
       // Play the note based on current palmPosition
       const currentPalmPosition = palmPositionRef.current;
       const currentPaused = pausedRef.current;
-      if (!currentPalmPosition || currentPaused) return; // Don't start playing if palm hasn't been detected at the start
+
       const index = Math.max(
         0,
         Math.min(
@@ -85,16 +95,17 @@ const Synthesizer = () => {
         )
       );
       const note = scale[index];
-      handleDrumClick(note);
+      if (currentPalmPosition && !currentPaused) {
+        handleDrumClick(note);
+        // Update logs
+        setLogs([...logs, note]);
+      } // Don't start playing if palm hasn't been detected at the start
 
       // Update FFT data
       if (fftRef.current) {
         const fftValues = fftRef.current.getValue();
         setFftData(new Float32Array(fftValues));
       }
-
-      // Update logs
-      setLogs([...logs, note]);
     }, TEMPO);
 
     // Clean up on unmount
