@@ -39,7 +39,32 @@ export const createBars = (
     scene.add(bar);
     bars.push(bar);
   }
+
   return bars;
+};
+
+// Function to update bars' color linearly from left to right
+export const updateBarColors = (bars, startColor, endColor) => {
+  // Get the leftmost and rightmost x positions of the bars
+  const xPositions = bars.map((bar) => bar.position.x);
+  const minX = Math.min(...xPositions);
+  const maxX = Math.max(...xPositions);
+
+  bars.forEach((bar) => {
+    // Normalize the bar's x position within the range
+    const normalizedPosition = (bar.position.x - minX) / (maxX - minX);
+
+    // Linearly interpolate the color for this bar
+    const barColor = startColor.clone().lerp(endColor, normalizedPosition);
+
+    // If the bar already has a material, just change its color
+    if (bar.material && bar.material.color) {
+      bar.material.color.set(barColor);
+    } else {
+      // Otherwise, create a new material with the interpolated color
+      bar.material = new THREE.MeshBasicMaterial({ color: barColor });
+    }
+  });
 };
 
 export const updateBars = (
@@ -54,7 +79,7 @@ export const updateBars = (
         const fovRadius = config.cameraFov * (Math.PI / 180); // Convert fov to radians
         const totalHeightAtBars = 2 * config.cameraZ * Math.tan(fovRadius / 2); // Total visible size at bars
 
-        const height = THREE.MathUtils.mapLinear(fftData[i], -100, 0, 0.1, 20);
+        const height = THREE.MathUtils.mapLinear(fftData[i], -100, 0, 0.1, 14);
         const scale = Math.min(
           Math.max(0.1, height),
           (totalHeightAtBars - 2) / config.initialBarHeight // don't allow it to go over the top

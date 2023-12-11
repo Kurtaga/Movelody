@@ -6,9 +6,10 @@ import {
   createBars,
   updateBars,
   onResize,
+  updateBarColors,
 } from "../../utils/visualizationUtils";
 
-const VISUALIZER_CONFIG = {
+export const VISUALIZER_CONFIG = {
   cameraFov: 5,
   cameraY: 30,
   cameraZ: 260,
@@ -22,8 +23,8 @@ const VISUALIZER_CONFIG = {
 const Visualizer = () => {
   const visualizerRef = useRef(null);
   const { fftData } = useContext(AppContext); // Access the FFT data from the context
-  const barsRef = useRef([]); // A ref to store the bar mesh objects
   const fftDataRef = useRef(fftData);
+  const barsRef = useRef([]); // A ref to store the bar mesh objects
 
   // Update the ref whenever fftData changes
   useEffect(() => {
@@ -54,6 +55,9 @@ const Visualizer = () => {
 
     // Create bars
     barsRef.current = createBars(scene, aspectRatio, VISUALIZER_CONFIG);
+    const startColor = new THREE.Color("#c3f0ca"); // Leftmost color
+    const endColor = new THREE.Color("#B8C1EC"); // Rightmost color
+    updateBarColors(barsRef.current, startColor, endColor);
 
     // Update bars
     const intervalId = setInterval(() => {
