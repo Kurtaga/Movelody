@@ -8,13 +8,16 @@ import {
   onResize,
   updateBarColors,
 } from "../../utils/visualizationUtils";
+import cassete from "../../assets/images/cassete.png";
+import { useAudioAmplitude } from "../..//hooks/useAudioAmplitude";
+import { beatSampler, melodySampler } from "../../utils/synthesizerUtils";
 
 export const VISUALIZER_CONFIG = {
   cameraFov: 5,
-  cameraY: 30,
-  cameraZ: 260,
-  numberOfBars: 26,
-  spaceBetweenBars: 0.75,
+  cameraY: 0,
+  cameraZ: 160,
+  numberOfBars: 10,
+  spaceBetweenBars: 1,
   initialBarHeight: 2,
   barColor: 0xc3f0ca,
   updateInterval: 1000 / 30, // Approximately 30 updates per second
@@ -25,6 +28,9 @@ const Visualizer = () => {
   const { fftData } = useContext(AppContext); // Access the FFT data from the context
   const fftDataRef = useRef(fftData);
   const barsRef = useRef([]); // A ref to store the bar mesh objects
+
+  const melodyAmplitude = useAudioAmplitude(melodySampler.analyser);
+  const beatAmplitude = useAudioAmplitude(beatSampler.analyser);
 
   // Update the ref whenever fftData changes
   useEffect(() => {
@@ -41,12 +47,12 @@ const Visualizer = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height);
     visualizerRef.current.appendChild(renderer.domElement);
-
+    console.log(width, height, aspectRatio);
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       VISUALIZER_CONFIG.cameraFov,
       aspectRatio,
-      0.1,
+      100,
       1000
     );
     camera.position.z = VISUALIZER_CONFIG.cameraZ;
@@ -55,8 +61,8 @@ const Visualizer = () => {
 
     // Create bars
     barsRef.current = createBars(scene, aspectRatio, VISUALIZER_CONFIG);
-    const startColor = new THREE.Color("#c3f0ca"); // Leftmost color
-    const endColor = new THREE.Color("#B8C1EC"); // Rightmost color
+    const startColor = new THREE.Color("#B4DBFE"); // Leftmost color
+    const endColor = new THREE.Color("#EAF9FA"); // Rightmost color
     updateBarColors(barsRef.current, startColor, endColor);
 
     // Update bars
@@ -88,7 +94,20 @@ const Visualizer = () => {
     };
   }, []); // Empty dependency array to run only once
 
-  return <div className="visualizer" ref={visualizerRef}></div>;
+  return (
+    <div
+      className={
+        "visualizer "
+        // + (gameState.current == GameStateEnum.LISTEN ? "dance" : "")
+      }
+      style={{
+        transform: `scale(${(melodyAmplitude + beatAmplitude) / 20 + 1})`,
+      }}
+    >
+      <div className="waveforms" ref={visualizerRef}></div>
+      <img src={cassete}></img>
+    </div>
+  );
 };
 
 export default Visualizer;

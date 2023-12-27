@@ -2,8 +2,20 @@
   position: relative;
   height: 100%;
   width: 100%;
-  flex: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 0px;
+  /* padding: 0px 100px; */
+  /* box-sizing: border-box; */
+}
+
+.visualizer .waveforms {
+  height: 100px;
+  width: 390px;
+}
+.visualizer img {
+  width: 400px;
+  margin-top: -10px;
 }

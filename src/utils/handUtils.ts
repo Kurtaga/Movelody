@@ -21,3 +21,17 @@ export const calculateHandMidpoint = (landmarks: Landmark[]): Landmark => {
     z: sumZ / landmarks.length,
   };
 };
+
+export const calculatePadIndex = (midpoint: Landmark): number => {
+  // Determine the grid size (1/3 of the view for both x and y)
+  const gridSize = 1 / 3;
+
+  // Calculate the index of the grid based on the midpoint
+  // Floor the result to get the index in a 0-indexed system
+  const xIndex = Math.floor(midpoint.x / gridSize);
+  const yIndex = Math.floor((1 - midpoint.y) / gridSize);
+
+  // Return the pad index from 0 to 8 (9 pads in total)
+  // Row-major order calculation (y * number_of_columns + x)
+  return yIndex * 3 + xIndex;
+};

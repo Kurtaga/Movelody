@@ -1,14 +1,30 @@
 import { useContext } from "react";
-import { AppContext } from "../AppContext/AppContext";
+import { AppContext, GameStateEnum } from "../AppContext/AppContext";
 import "./Loading.css";
 
-const Loading = () => {
-  const { loading } = useContext(AppContext);
+const Loading = ({ type }: { type: GameStateEnum }) => {
+  const { gameState } = useContext(AppContext);
 
   return (
-    loading && (
-      <div className="loading">
-        <div className="loader"></div>
+    gameState.current == type && (
+      <div className={type == GameStateEnum.LOADING && "loading"}>
+        <div
+          className="loader"
+          style={{
+            border:
+              type == GameStateEnum.LOADING
+                ? "7px solid var(--primary)"
+                : "7px solid var(--fourth)",
+            borderTop:
+              type == GameStateEnum.LOADING
+                ? "7px solid transparent"
+                : "7px solid transparent",
+            borderLeft:
+              type == GameStateEnum.LOADING
+                ? "7px solid transparent"
+                : "7px solid transparent",
+          }}
+        ></div>
       </div>
     )
   );

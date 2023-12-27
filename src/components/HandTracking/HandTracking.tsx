@@ -5,15 +5,23 @@ import {
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
 import "./HandTracking.css";
-import { AppContext, SET_HANDS, Hand } from "../AppContext/AppContext";
+import {
+  AppContext,
+  SET_HANDS,
+  Hand,
+  STOP_LOADING,
+} from "../AppContext/AppContext";
+import Grid from "../Grid/Grid";
+import Gestures from "../Gestures/Gestures";
 
 const HandTracking = () => {
-  const { setLoading, handTrackingDispatch } = useContext(AppContext);
-  const [gestureOutput] = useState("");
+  const { gameStateDispatch, handTrackingDispatch } = useContext(AppContext);
   const [webcamRunning, setWebcamRunning] = useState(true);
   const gestureRecognizerRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const parentRef = useRef(null);
+  const gesturesRef = useRef(null);
 
   useEffect(() => {
     const createGestureRecognizer = async () => {
@@ -38,16 +46,38 @@ const HandTracking = () => {
     createGestureRecognizer();
   }, []);
 
+  // const handleSize = () => {
+  //   // Set the canvas size to match the video element size
+  //   const parentElement = parentRef.current;
+  //   const canvasElement = canvasRef.current;
+  //   if (canvasElement && parentElement) {
+  //     console.log(canvasElement.clientWidth, canvasElement.clientHeight);
+  //     // Now set the size of the grid element to match the displayed size of the canvas
+  //     parentElement.style.width = canvasElement.clientWidth + "px";
+  //     parentElement.style.height = canvasElement.clientHeight + "px";
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   handleSize();
+  // }, [canvasRef]);
+
   const handleLoadedMetadata = () => {
     // Set the canvas size to match the video element size
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
+    const gesturesElement = gesturesRef.current;
+    // const gridElement = gridRef.current;
     if (videoElement && canvasElement) {
       canvasElement.width = videoElement.videoWidth;
       canvasElement.height = videoElement.videoHeight;
+      // canvasElement.width = videoElement.videoWidth;
+      // canvasElement.height = videoElement.videoHeight;
+      // Now set the size of the grid element to match the displayed size of the canvas
+      gesturesElement.style.width = canvasElement.clientWidth + "px";
+      // gridElement.style.height = canvasElement.clientHeight + "px";
     }
-    console.log("making loading false");
-    setLoading(false);
+    gameStateDispatch({ type: STOP_LOADING, payload: undefined });
     // Additional code to handle when the video metadata is loaded
     predictWebcam();
   };
@@ -111,16 +141,18 @@ const HandTracking = () => {
             videoElement
           );
           if (!videoElement) return;
-          // if (!results || !results.gestures) {
-          //   updateHands([]);
-          //   return;
-          // }
+          if (!results || !results.gestures) {
+            updateHands([]);
+            return;
+          }
 
-          const newHands = results.gestures.map((gesture, index) => ({
-            gestureName: gesture[0].categoryName,
-            confidence: gesture[0].score,
-            landmarks: results.landmarks[index],
-          }));
+          const newHands = results.gestures.map((gesture, index) => {
+            return {
+              gestureName: gesture[0].categoryName,
+              confidence: gesture[0].score,
+              landmarks: results.landmarks[index],
+            };
+          });
           updateHands(newHands);
 
           canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -136,7 +168,7 @@ const HandTracking = () => {
           if (results.landmarks) {
             for (const landmarks of results.landmarks) {
               drawingUtils.drawLandmarks(landmarks, {
-                color: "#eebbc3",
+                color: "#fffffe",
                 lineWidth: 5,
               });
             }
@@ -155,16 +187,25 @@ const HandTracking = () => {
   };
 
   return (
-    <div className="hand-tracking">
-      <video
-        ref={videoRef}
-        // style={{ display: webcamRunning ? "block" : "none" }}
-        className="video"
-        onLoadedMetadata={handleLoadedMetadata}
-      ></video>
-      <canvas className="canvas" ref={canvasRef}></canvas>
-      <div>{gestureOutput}</div>
+    // gameState.current !== GameStateEnum.LISTEN && (
+    <div
+      className={
+        "webcam-gestures "
+        // + (gameState.current == GameStateEnum.LISTEN ? "dance" : "")
+      }
+    >
+      <div className="hand-tracking" ref={parentRef}>
+        <video
+          ref={videoRef}
+          className="video"
+          onLoadedMetadata={handleLoadedMetadata}
+        ></video>
+        <canvas className="canvas" ref={canvasRef}></canvas>
+        <Grid canvasRef={canvasRef} />
+      </div>
+      <Gestures gesturesRef={gesturesRef} />
     </div>
+    // )
   );
 };
 

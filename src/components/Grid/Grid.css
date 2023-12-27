@@ -1,0 +1,50 @@
+.grid {
+  position: absolute;
+  /* top: 0; */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  /* border-radius: 5%; */
+  height: 100%;
+  width: 100%;
+  /* border: 10px solid var(--primary); */
+  border-radius: 10px;
+  box-sizing: content-box;
+  overflow: hidden;
+  /* margin: 12.5px 12.5px 0px 0px; */
+  border: 9px solid var(--primary);
+  overflow: hidden;
+}
+
+.grid3 {
+  grid-template-rows: 1fr;
+}
+
+.grid9 {
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.grid-item {
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+}
+
+.beat {
+  -webkit-animation: beat 1s linear infinite;
+  animation: beat 1s linear infinite;
+}
+
+@keyframes beat {
+  0% {
+    border: 14px solid rgba(255, 255, 255, 0.9); /* Solid white border */
+    box-shadow: 0 0 10px 15px rgba(255, 255, 255, 0); /* Transparent shadow */
+  }
+  50% {
+    border: 11px solid rgba(255, 255, 255, 0.9); /* Half opacity */
+    box-shadow: 0 0 5px 7.5px rgba(255, 255, 255, 0.25); /* Slightly visible shadow */
+  }
+  100% {
+    border: 9px solid rgba(255, 255, 255, 0.9); /* Transparent border */
+    box-shadow: 0 0 0px 0px rgba(255, 255, 255, 0.5); /* More visible shadow */
+  }
+}

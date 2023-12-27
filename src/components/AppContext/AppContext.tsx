@@ -26,6 +26,42 @@ export type HandTrackingAction = {
   payload: Hand[];
 };
 
+export interface GameStateAction {
+  type: string;
+  payload?: GameStateEnum;
+}
+
+export const TOGGLE_PAUSE = "TOGGLE_PAUSE";
+export const STOP_LOADING = "STOP_LOADING";
+export const SET_MELODY = "SET_BASE";
+export const SET_BEAT = "SET_PLAY";
+export const SET_LISTEN = "SET_LISTEN";
+export const SET_STATE_AFTER_TRANSITION = "SET_STATE_AFTER_TRANSITION";
+export const SET_TRANSITION = "SET_TRANSITION";
+
+export enum GameStateEnum {
+  LOADING = "LOADING",
+  PAUSE = "PAUSE",
+  MELODY = "MELODY",
+  BEAT = "BEAT",
+  LISTEN = "LISTEN",
+  TRANSITION = "TRANSITION",
+}
+
+export interface GameState {
+  current: GameStateEnum;
+  previous: GameStateEnum;
+}
+
+export interface BaseSampleAction {
+  type: string;
+  payload?: string;
+}
+
+export const ADD_SAMPLE = "ADD_SAMPLE";
+
+export const BASE_SAMPLES_LENGTH = 6;
+
 // Define the shape of the context data, including FFT data
 interface AppContextInterface {
   fftData: Float32Array | undefined;
@@ -34,11 +70,14 @@ interface AppContextInterface {
   handTrackingDispatch: Dispatch<HandTrackingAction>;
   logs: string[];
   setLogs: (logs: string[]) => void;
-  paused: boolean;
-  setPaused: (loading: boolean) => void;
   lineOut: React.MutableRefObject<ToneAudioNode>;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
+  gameState: GameState;
+  gameStateDispatch: Dispatch<GameStateAction>;
+  baseSamples: string[];
+  baseSamplesDispatch: Dispatch<BaseSampleAction>;
+  baseIndex: number;
+  setBaseIndex: (baseIndex: number) => void;
+  changeStateWithLoading: (newState: GameStateEnum) => void;
 }
 
 // Create the context with default values
@@ -51,9 +90,15 @@ export const AppContext = createContext<AppContextInterface>({
   handTrackingDispatch: () => {},
   logs: [],
   setLogs: () => {},
-  paused: false,
-  setPaused: () => {},
   lineOut: undefined,
-  loading: true,
-  setLoading: () => {},
+  gameState: {
+    current: GameStateEnum.LOADING,
+    previous: GameStateEnum.LOADING,
+  },
+  gameStateDispatch: () => {},
+  baseSamples: [],
+  baseSamplesDispatch: () => {},
+  baseIndex: 0,
+  setBaseIndex: () => {},
+  changeStateWithLoading: () => {},
 });

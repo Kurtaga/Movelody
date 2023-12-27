@@ -5,10 +5,12 @@ export const createBars = (
   aspectRatio: number,
   config
 ): THREE.Mesh[] => {
-  const fovRadius = config.cameraFov * (Math.PI / 180); // Convert fov to radians
-  const horizontalFov = 2 * Math.atan(Math.tan(fovRadius / 2) * aspectRatio);
+  const vFOV = THREE.MathUtils.degToRad(config.cameraFov); // convert vertical fov to radians
+  const visibleHeight = 2 * Math.tan(vFOV / 2) * config.cameraZ; // visible height
+  const bottomY = -visibleHeight / 2; // Y-coordinate of the bottom of the visible area
+
+  const horizontalFov = 2 * Math.atan(Math.tan(vFOV / 2) * aspectRatio);
   const totalWidthAtBars = 2 * config.cameraZ * Math.tan(horizontalFov / 2); // Total visible size at bars
-  const totalHeightAtBars = 2 * config.cameraZ * Math.tan(fovRadius / 2); // Total visible size at bars
 
   const totalSpaceBetweenBars =
     (config.numberOfBars - 1) * config.spaceBetweenBars;
@@ -35,7 +37,7 @@ export const createBars = (
     // bar.position.x = startX + i * (barWidth + spaceWidth);
     bar.position.x =
       startX + i * (barWidth + config.spaceBetweenBars) + barWidth / 2;
-    bar.position.y = -totalHeightAtBars / 2 + config.initialBarHeight / 2; // Set the initial y position to half the height
+    bar.position.y = bottomY; // Set the initial y position to half the height
     scene.add(bar);
     bars.push(bar);
   }
@@ -76,10 +78,14 @@ export const updateBars = (
     const bar = bars[i];
     if (bar) {
       if (fftData) {
+        const vFOV = THREE.MathUtils.degToRad(config.cameraFov); // convert vertical fov to radians
+        const visibleHeight = 2 * Math.tan(vFOV / 2) * config.cameraZ; // visible height
+        const bottomY = -visibleHeight / 2; // Y-coordinate of the bottom of the visible area
+
         const fovRadius = config.cameraFov * (Math.PI / 180); // Convert fov to radians
         const totalHeightAtBars = 2 * config.cameraZ * Math.tan(fovRadius / 2); // Total visible size at bars
 
-        const height = THREE.MathUtils.mapLinear(fftData[i], -100, 0, 0.1, 14);
+        const height = THREE.MathUtils.mapLinear(fftData[i], -100, 0, 0.1, 5);
         const scale = Math.min(
           Math.max(0.1, height),
           (totalHeightAtBars - 2) / config.initialBarHeight // don't allow it to go over the top
@@ -88,9 +94,7 @@ export const updateBars = (
         // const yPos = bar.position.y;
         bar.scale.y = scale;
 
-        const beforeHeight =
-          -totalHeightAtBars / 2 + config.initialBarHeight / 2;
-        bar.position.y = beforeHeight + (scale * config.initialBarHeight) / 2;
+        bar.position.y = bottomY + (scale * config.initialBarHeight) / 2;
       }
     }
   }

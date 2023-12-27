@@ -1,9 +1,11 @@
 body,
 html,
 #root {
-  --background: #232946; /* Example CSS variable */
+  --background: #3d3a3d; /* Example CSS variable */
   --primary: #fffffe;
-  --secondary: #eebbc3;
+  --secondary: #b4dbfe;
+  --tertiary: #2b2b2b;
+  --fourth: #b4dbfe;
   position: absolute;
   paddding: 0;
   margin: 0;
@@ -11,4 +13,24 @@ html,
   width: 100%;
   overflow: hidden;
   background: var(--background);
+}
+
+.dance {
+  animation: dance 2s infinite;
+}
+
+@keyframes dance {
+  0%,
+  100% {
+    transform: rotate(-5deg) scale(0.95);
+  }
+  25% {
+    transform: rotate(5deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(-3deg) scale(1);
+  }
+  75% {
+    transform: rotate(3deg) scale(1.05);
+  }
 }
