@@ -92,8 +92,12 @@ class MelodySampler {
 
   // Method to stop all melodies
   public stopAllMelodies(): void {
+    console.log("stopping");
     if (this.currentMelody) {
       this.sampler.triggerRelease(this.currentMelody);
+    }
+    if (this.selectedMelody) {
+      this.sampler.triggerRelease(this.selectedMelody);
     }
     this.currentMelody = "";
   }
@@ -263,15 +267,15 @@ class BeatSampler {
 
 // Define the mapping from notes to sample URLs
 const beatMap: SampleMap = {
-  C2: "public/sounds/48.wav",
-  D2: "public/sounds/45.wav",
-  E2: "public/sounds/117.wav",
-  F2: "public/sounds/108.wav",
-  G2: "public/sounds/104.wav",
-  A2: "public/sounds/112.wav",
-  B2: "public/sounds/98.wav",
-  C3: "public/sounds/105.wav",
-  D3: "public/sounds/106.wav",
+  C2: "public/sounds/48.wav", // Snap
+  D2: "public/sounds/45.wav", // Blip
+  E2: "public/sounds/117.wav", // Knock
+  F2: "public/sounds/108.wav", // Tom
+  G2: "public/sounds/104.wav", // Snap dry
+  A2: "public/sounds/112.wav", // Ting
+  B2: "public/sounds/98.wav", // Bass
+  C3: "public/sounds/105.wav", // Deep
+  D3: "public/sounds/106.wav", // Bass low
   // ... add more samples if needed
 };
 

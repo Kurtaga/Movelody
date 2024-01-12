@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import "./Footer.css";
 import pauseIcon from "../../assets/icons/pause.svg";
 import playIcon from "../../assets/icons/play.svg";
+import retryIcon from "../../assets/icons/retry.svg";
 import {
   AppContext,
   GameStateEnum,
+  SET_MELODY,
   TOGGLE_PAUSE,
 } from "../AppContext/AppContext";
-import { beatSampler } from "../../utils/synthesizerUtils";
+import { beatSampler, melodySampler } from "../../utils/synthesizerUtils";
 import Loading from "../Loading/Loading";
 
 const Footer = () => {
@@ -18,10 +20,18 @@ const Footer = () => {
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [transition, setTransition] = useState<boolean>(false);
 
-  const handleClick = () => {
+  const handlePauseClick = () => {
     gameStateDispatch({ type: TOGGLE_PAUSE });
   };
 
+  const handleRetryClick = () => {
+    console.log("restarting");
+    gameStateDispatch({ type: SET_MELODY });
+    melodySampler.stopAllMelodies();
+    melodySampler.selectMelody("");
+    beatSampler.samples = [];
+    beatSampler.stopAllBeats();
+  };
   useEffect(() => {
     switch (gameState.current) {
       case GameStateEnum.PAUSE:
@@ -78,14 +88,19 @@ const Footer = () => {
         <p className="title">{gameStateName}</p>
         <p className="description">{gameStateDescription}</p>
       </span>
-      {transition ? (
-        <Loading type={GameStateEnum.TRANSITION} />
-      ) : (
-        <img
-          src={gameState.current === GameStateEnum.PAUSE ? playIcon : pauseIcon}
-          onClick={handleClick}
-        />
-      )}
+      <span>
+        {transition ? (
+          <Loading type={GameStateEnum.TRANSITION} />
+        ) : (
+          <img
+            src={
+              gameState.current === GameStateEnum.PAUSE ? playIcon : pauseIcon
+            }
+            onClick={handlePauseClick}
+          />
+        )}
+        <img src={retryIcon} onClick={handleRetryClick} className="retry" />
+      </span>
       <div
         className="progress-bar"
         style={{

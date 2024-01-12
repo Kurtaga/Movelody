@@ -7,15 +7,16 @@
   justify-content: center;
   flex-direction: column;
   gap: 0px;
+  margin-bottom: 60px;
   /* padding: 0px 100px; */
   /* box-sizing: border-box; */
 }
 
 .visualizer .waveforms {
   height: 100px;
-  width: 390px;
+  width: 290px;
 }
 .visualizer img {
-  width: 400px;
+  width: 300px;
   margin-top: -10px;
 }

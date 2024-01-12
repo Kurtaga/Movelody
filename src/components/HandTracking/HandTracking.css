@@ -1,11 +1,13 @@
 .webcam-gestures {
   position: relative;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 25px;
+  box-sizing: border-box;
 }
 .hand-tracking {
   position: relative;
@@ -18,13 +20,12 @@
   /* border-radius: 5%; */
   /* overflow: hidden; */
   box-sizing: border-box;
-  overflow: hidden;
 }
 .video,
 .canvas {
   overflow: hidden;
 
-  max-height: 350px;
+  max-height: 260px;
   /* border: 4px solid var(--primary); */
   box-sizing: border-box;
   /* border-radius: 10px; */

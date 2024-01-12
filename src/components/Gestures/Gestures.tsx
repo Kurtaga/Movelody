@@ -39,7 +39,7 @@ const gestures: Map<string, GestureProps> = new Map([
     "ILoveYou",
     {
       filename: "i_love_you_transparent.png",
-      description: "None",
+      description: "Retry",
     },
   ],
   //   [

@@ -5,7 +5,7 @@
   bottom: 0;
   right: 0;
   width: 100%;
-  height: 15%;
+  height: 12.5%;
   background: var(--primary);
   display: flex;
   flex-direction: row;
@@ -19,25 +19,29 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 25px;
 }
 
 .title {
   color: var(---primary);
   font-weight: bold;
-  font-size: 35px;
+  font-size: 30px;
 }
 
 .description {
   color: var(--secondary);
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .footer img {
   z-index: 1;
-  height: 40px;
+  height: 32px;
   cursor: pointer;
+}
+
+.retry {
+  /* height: 25px !important; */
 }
 
 .progress-bar {

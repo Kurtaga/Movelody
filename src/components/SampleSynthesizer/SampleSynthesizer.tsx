@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import {
   AppContext,
   GameStateEnum,
+  SET_MELODY,
   TOGGLE_PAUSE,
   // SET_BEAT,
   // SET_LISTEN,
@@ -206,6 +207,14 @@ const SampleSynthesizer = () => {
           beatSampler.playOnce(beatSample);
           beatSampler.selectBeat(beatSample);
         }
+        break;
+      case "ILoveYou":
+        console.log("restarting");
+        gameStateDispatch({ type: SET_MELODY });
+        melodySampler.stopAllMelodies();
+        melodySampler.selectMelody("");
+        beatSampler.samples = [];
+        beatSampler.stopAllBeats();
         break;
       default:
         break;
