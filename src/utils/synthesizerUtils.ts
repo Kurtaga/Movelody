@@ -73,7 +73,8 @@ class MelodySampler {
     if (this.selectedMelody) {
       // this.sampler.triggerAttack(this.selectedMelody);
       if (!this.melodyLoop.state || this.melodyLoop.state !== "started") {
-        this.melodyLoop.start(0);
+        // Start the loop immediately at the current Transport time
+        this.melodyLoop.start(Transport.now());
       }
     }
   }
@@ -128,7 +129,14 @@ class MelodySampler {
     }
     if (this.selectedMelody) {
       console.log("Resuming selected melody.");
-      this.startSelectedMelody();
+
+      // Trigger the melody immediately
+      // this.sampler.triggerAttack(this.selectedMelody, Transport.now());
+
+      // Then start the loop
+      if (!this.melodyLoop.state || this.melodyLoop.state !== "started") {
+        this.melodyLoop.start(Transport.now());
+      }
     }
   }
 }
